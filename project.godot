@@ -8,11 +8,31 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "StaticBody",
+"class": "CellSelector",
+"language": "GDScript",
+"path": "res://Scripts/Level/CellSelector.gd"
+}, {
+"base": "Camera",
+"class": "CustomCamera",
+"language": "GDScript",
+"path": "res://Scripts/Level/CustomCamera.gd"
+} ]
+_global_script_class_icons={
+"CellSelector": "",
+"CustomCamera": ""
+}
+
 [application]
 
 config/name="LudumDare 50"
-run/main_scene="res://Scenes/Level.tscn"
+run/main_scene="res://Scenes/Game.tscn"
 config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/godot_editor_discord_presence/plugin.cfg" )
 
 [input]
 

@@ -1,0 +1,71 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Scripts/Level/CellSelector.gd" type="Script" id=1]
+
+[sub_resource type="BoxShape" id=8]
+
+[sub_resource type="CubeMesh" id=9]
+
+[sub_resource type="SpatialMaterial" id=3]
+flags_transparent = true
+albedo_color = Color( 1, 0, 0, 0.235294 )
+
+[sub_resource type="Shader" id=5]
+code = "/*
+	魔法防御シェーダー 2 by あるる（きのもと 結衣）
+	Magical Shield Shader 2 by Yui Kinomoto @arlez80
+
+	MIT License
+*/
+
+shader_type spatial;
+render_mode unshaded, depth_draw_never;
+
+uniform vec4 barrier_color : hint_color = vec4( 0.05, 1.0, 0.5, 1.0 );
+uniform float barrier_force = 1.0;
+uniform float barrier_interval = 50.0;
+uniform float barrier_speed = 10.0;
+
+void fragment( )
+{
+	vec3 v = ( CAMERA_MATRIX * vec4( VERTEX, 1.0 ) ).xyz;
+	float f = sin( v.y * barrier_interval + TIME * barrier_speed );
+	ALBEDO = barrier_color.rgb;
+	ALPHA = clamp( ( 1.0 - dot( NORMAL, VIEW ) ) * f * barrier_force, 0.0, 1.0 );
+}
+
+"
+
+[sub_resource type="ShaderMaterial" id=7]
+shader = SubResource( 5 )
+shader_param/barrier_color = Color( 0, 0.0627451, 1, 1 )
+shader_param/barrier_force = 3.0
+shader_param/barrier_interval = 20.0
+shader_param/barrier_speed = -4.0
+
+[node name="CellSelector" type="StaticBody"]
+script = ExtResource( 1 )
+selection_shape/size = Vector3( 1, 1, 1 )
+visual_selector/outer_size = Vector3( 2, 0.6, 2 )
+visual_selector/inner_size = Vector3( 1.5, 0.7, 1.5 )
+visual_selector/offset = Vector3( 0, -0.6, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 8 )
+
+[node name="Tmp" type="MeshInstance" parent="."]
+mesh = SubResource( 9 )
+material/0 = SubResource( 3 )
+
+[node name="VisualSelector" type="CSGCombiner" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0 )
+material_override = SubResource( 7 )
+
+[node name="VisualSelectorOuter" type="CSGBox" parent="VisualSelector"]
+height = 0.6
+
+[node name="VisualSelectorInner" type="CSGBox" parent="VisualSelector"]
+operation = 2
+width = 1.5
+height = 0.7
+depth = 1.5
