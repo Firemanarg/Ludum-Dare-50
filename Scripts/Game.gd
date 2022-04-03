@@ -1,6 +1,12 @@
 extends Node
 
 
+enum Modes {
+	NORMAL,
+	BUILDING,
+	SKY,
+}
+
 var p_level = preload("res://Scenes/Level.tscn")
 
 var level: Spatial = null
@@ -10,8 +16,7 @@ var grid: Spatial = null
 var mouse_3d = null
 var mouse_hover_target = null
 var mouse_selection_target = null
-
-onready var o_cursor = get_node("Cursor")
+var current_mode = Modes.NORMAL
 
 
 func _ready():
@@ -38,13 +43,14 @@ func _unhandled_input(event):
 			else:
 				set_selection_target(null)
 	elif event is InputEventKey:
-		match event.scancode:
-			KEY_1:
-				camera.set_state(camera.ZoomState.GRID_VIEW)
-			KEY_2:
-				camera.set_state(camera.ZoomState.NORMAL)
-			KEY_3:
-				camera.set_state(camera.ZoomState.SKY_VIEW)
+		if event.is_pressed():
+			match event.scancode:
+				KEY_1:
+					camera.set_state(camera.ZoomState.GRID_VIEW)
+				KEY_2:
+					camera.set_state(camera.ZoomState.NORMAL)
+				KEY_3:
+					camera.set_state(camera.ZoomState.SKY_VIEW)
 
 
 func set_hover_target(target):
@@ -63,6 +69,18 @@ func set_selection_target(target):
 	mouse_selection_target = target
 	if target and target.has_method("select"):
 		target.select()
+
+
+func set_mode(mode: int):
+	if not mode == current_mode:
+		current_mode = mode
+		match current_mode:
+			Modes.NORMAL:
+				camera.set_state(camera.ZoomState.NORMAL)
+			Modes.BUILDING:
+				camera.set_state(camera.ZoomState.GRID_VIEW)
+			Modes.SKY:
+				camera.set_state(camera.ZoomState.SKY_VIEW)
 
 
 func start_game():

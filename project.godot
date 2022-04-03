@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "StaticBody",
+"class": "Cell",
+"language": "GDScript",
+"path": "res://Scripts/Level/Cell.gd"
+}, {
+"base": "StaticBody",
 "class": "CellSelector",
 "language": "GDScript",
 "path": "res://Scripts/Level/CellSelector.gd"
@@ -18,10 +23,23 @@ _global_script_classes=[ {
 "class": "CustomCamera",
 "language": "GDScript",
 "path": "res://Scripts/Level/CustomCamera.gd"
+}, {
+"base": "StaticBody",
+"class": "ResourceCollector",
+"language": "GDScript",
+"path": "res://Scripts/Level/ResourceCollector.gd"
+}, {
+"base": "Spatial",
+"class": "VisualSelector",
+"language": "GDScript",
+"path": "res://Scripts/Level/VisualSelector.gd"
 } ]
 _global_script_class_icons={
+"Cell": "",
 "CellSelector": "",
-"CustomCamera": ""
+"CustomCamera": "",
+"ResourceCollector": "",
+"VisualSelector": ""
 }
 
 [application]
@@ -32,7 +50,7 @@ config/icon="res://icon.png"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/godot_editor_discord_presence/plugin.cfg" )
+enabled=PoolStringArray(  )
 
 [input]
 
@@ -44,6 +62,16 @@ mouse_wheel_up={
 mouse_wheel_down={
 "deadzone": 0.5,
 "events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":5,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+mouse_left={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
+mouse_right={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":2,"pressed":false,"doubleclick":false,"script":null)
  ]
 }
 

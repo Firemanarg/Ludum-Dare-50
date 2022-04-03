@@ -5,6 +5,7 @@ class_name CellSelector
 
 const HOVER_COLOR = Color(0, 0.9, 1)
 const SELECTED_COLOR = Color(0, 0.1, 1)
+const UNAVAILABLE_COLOR = Color(0.5, 0, 0)
 
 enum Direction {
 	UP = -1,
@@ -29,6 +30,7 @@ func _ready():
 	if Engine.editor_hint:
 		$Tmp.mesh = $Tmp.mesh.duplicate()
 	else:
+		_update_position_and_size()
 		$Tmp.queue_free()
 		unhover()
 		unselect()
@@ -36,19 +38,16 @@ func _ready():
 
 func _process(delta):
 	if Engine.editor_hint:
-		$CollisionShape.shape.extents = _selection_shape_size
-		$Tmp.mesh.size = _selection_shape_size * 2
-		$VisualSelector.translation = _visual_selector_offset
-		$VisualSelector/VisualSelectorOuter.width = _visual_selector_outer_size.x
-		$VisualSelector/VisualSelectorOuter.height = _visual_selector_outer_size.y
-		$VisualSelector/VisualSelectorOuter.depth = _visual_selector_outer_size.z
-		$VisualSelector/VisualSelectorInner.width = _visual_selector_inner_size.x
-		$VisualSelector/VisualSelectorInner.height = _visual_selector_inner_size.y
-		$VisualSelector/VisualSelectorInner.depth = _visual_selector_inner_size.z
+		_update_position_and_size()
 
 
 func get_class() -> String:
 	return "CellSelector"
+
+
+func set_collisions_enabled(state: bool):
+	collisions_enabled = state
+	$CollisionShape.disabled = not collisions_enabled
 
 
 func hover():
@@ -93,6 +92,18 @@ func set_animation_direction(direction: int):
 	var speed = material.get_shader_param("barrier_speed")
 	material.set_shader_param("barrier_speed", abs(speed) * direction)
 	$VisualSelector.material_override = material
+
+
+func _update_position_and_size():
+	$CollisionShape.shape.extents = _selection_shape_size
+	$Tmp.mesh.size = _selection_shape_size * 2
+	$VisualSelector.translation = _visual_selector_offset
+	$VisualSelector/VisualSelectorOuter.width = _visual_selector_outer_size.x
+	$VisualSelector/VisualSelectorOuter.height = _visual_selector_outer_size.y
+	$VisualSelector/VisualSelectorOuter.depth = _visual_selector_outer_size.z
+	$VisualSelector/VisualSelectorInner.width = _visual_selector_inner_size.x
+	$VisualSelector/VisualSelectorInner.height = _visual_selector_inner_size.y
+	$VisualSelector/VisualSelectorInner.depth = _visual_selector_inner_size.z
 
 
 func _get(property):

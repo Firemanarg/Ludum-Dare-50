@@ -344,3 +344,11 @@ transform = Transform( 0.73377, -0.0472697, 0.677752, -0.45581, -0.774, 0.439501
 light_energy = 0.536
 shadow_enabled = true
 shadow_color = Color( 0.266667, 0.266667, 0.266667, 1 )
+
+[node name="ModeSelection" type="Spatial" parent="."]
+
+[node name="CellSelector" parent="ModeSelection" instance=ExtResource( 28 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -5 )
+selection_shape/size = Vector3( 6, 1, 4 )
+visual_selector/outer_size = Vector3( 12.2, 0.6, 8.2 )
+visual_selector/inner_size = Vector3( 11.8, 0.7, 7.8 )

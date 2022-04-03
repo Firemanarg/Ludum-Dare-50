@@ -10,7 +10,7 @@ enum ZoomState {
 
 const zoom_states = {
 	ZoomState.NORMAL: {
-		"translation": Vector3(0, 7, 13),
+		"translation": Vector3(0, 7, 14),
 		"rotation": Vector3(-7.4, 0, 0),
 		"fov": 42,
 	},
@@ -55,10 +55,22 @@ func cast_mouse_to_3d() -> Dictionary:
 	return result
 
 
+func mouse_3d_projection() -> Dictionary:
+	var mouse_pos = self.get_viewport().get_mouse_position()
+	var space_state = get_world().direct_space_state
+	var from = project_ray_origin(mouse_pos)
+	var to = from + project_ray_normal(mouse_pos) * 1000
+
+	var result = space_state.intersect_ray(from, to)
+
+	return result
+
+
 func set_state(state: int):
 	var target_translation: Vector3 = zoom_states[state].translation
 	var target_rotation: Vector3 = zoom_states[state].rotation
 	var target_fov: int = zoom_states[state].fov
+	var duration: float = target_translation.distance_to(translation) / transition_speed
 
 	# Tween translation
 	$Tween.interpolate_property(
@@ -66,9 +78,9 @@ func set_state(state: int):
 		"translation",
 		translation,
 		target_translation,
-		target_translation.distance_to(translation) / transition_speed,
+		duration,
 		Tween.TRANS_LINEAR,
-		Tween.EASE_OUT_IN
+		Tween.EASE_OUT
 	)
 
 	# Tween rotation
@@ -77,9 +89,9 @@ func set_state(state: int):
 		"rotation_degrees",
 		rotation_degrees,
 		target_rotation,
-		target_translation.distance_to(translation) / transition_speed,
+		duration,
 		Tween.TRANS_LINEAR,
-		Tween.EASE_OUT_IN
+		Tween.EASE_OUT
 	)
 
 	# Tween fov
@@ -89,8 +101,8 @@ func set_state(state: int):
 		fov,
 		target_fov,
 		target_translation.distance_to(translation) / transition_speed,
-		Tween.TRANS_CUBIC,
-		Tween.EASE_OUT_IN
+		Tween.TRANS_LINEAR,
+		Tween.EASE_OUT
 	)
 
 	$Tween.stop_all()
