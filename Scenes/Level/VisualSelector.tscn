@@ -41,6 +41,7 @@ size = Vector3( 3, 0.4, 3 )
 
 [node name="Mesh" type="CSGCombiner" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0 )
+visible = false
 material_override = SubResource( 7 )
 
 [node name="OuterMesh" type="CSGBox" parent="Mesh"]

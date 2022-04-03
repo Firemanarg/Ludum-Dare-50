@@ -1,86 +1,32 @@
 extends Node
 
 
-enum Modes {
-	NORMAL,
-	BUILDING,
-	SKY,
-}
-
-var p_level = preload("res://Scenes/Level.tscn")
+var p_level = preload("res://Scenes/Level/Level.tscn")
 
 var level: Spatial = null
 var camera: CustomCamera = null
 var grid: Spatial = null
+var collectors: Grid = null
 
-var mouse_3d = null
 var mouse_hover_target = null
 var mouse_selection_target = null
-var current_mode = Modes.NORMAL
+var mouse_cast_info: Dictionary = {}
+
+# Currency
+var fuel_amount = 0
+var metal_amount = 0
 
 
 func _ready():
-	start_game()
+	camera = $Level/CustomCamera
+	pass
+#	start_game()
 
 
 func _physics_process(delta):
-	if camera.is_inside_tree():
-		var result: Dictionary = camera.cast_mouse_to_3d()
-		if not result.empty():
-			var collider = result.collider
-			match collider.get_class():
-				"CellSelector":
-					set_hover_target(collider)
-		else:
-			set_hover_target(null)
-
-
-func _unhandled_input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_LEFT:
-			if mouse_hover_target:
-				set_selection_target(mouse_hover_target)
-			else:
-				set_selection_target(null)
-	elif event is InputEventKey:
-		if event.is_pressed():
-			match event.scancode:
-				KEY_1:
-					camera.set_state(camera.ZoomState.GRID_VIEW)
-				KEY_2:
-					camera.set_state(camera.ZoomState.NORMAL)
-				KEY_3:
-					camera.set_state(camera.ZoomState.SKY_VIEW)
-
-
-func set_hover_target(target):
-	if mouse_hover_target:
-		if mouse_hover_target.has_method("unhover"):
-			mouse_hover_target.unhover()
-	mouse_hover_target = target
-	if target and target.has_method("hover"):
-		target.hover()
-
-
-func set_selection_target(target):
-	if mouse_selection_target:
-		if mouse_selection_target.has_method("unselect"):
-			mouse_selection_target.unselect()
-	mouse_selection_target = target
-	if target and target.has_method("select"):
-		target.select()
-
-
-func set_mode(mode: int):
-	if not mode == current_mode:
-		current_mode = mode
-		match current_mode:
-			Modes.NORMAL:
-				camera.set_state(camera.ZoomState.NORMAL)
-			Modes.BUILDING:
-				camera.set_state(camera.ZoomState.GRID_VIEW)
-			Modes.SKY:
-				camera.set_state(camera.ZoomState.SKY_VIEW)
+	mouse_cast_info = camera.mouse_3d_projection()
+	_check_cursor_hover()
+	_check_cursor_click()
 
 
 func start_game():
@@ -89,4 +35,149 @@ func start_game():
 	level = p_level.instance()
 	add_child(level)
 	camera = level.get_node("CustomCamera")
+	camera.set_current(true)
 	grid = level.get_node("Grid")
+	collectors = level.get_node("Resources/Collectors")
+
+
+func add_fuel(amount: int):
+	fuel_amount += amount
+
+
+func add_metal(amount: int):
+	metal_amount += amount
+
+
+func _unselect_current():
+	if not mouse_selection_target:
+		return
+	match mouse_hover_target.get_class():
+		"ResourceCollector": mouse_hover_target.state = Global.SelectorState.NONE
+		"Cell": mouse_hover_target.state = Global.SelectorState.NONE
+	mouse_selection_target = null
+
+
+func _unhover_current():
+	if not mouse_hover_target:
+		return
+
+	match mouse_hover_target.get_class():
+		"ResourceCollector": mouse_hover_target.state = Global.SelectorState.NONE
+		"Cell": mouse_hover_target.state = Global.SelectorState.NONE
+	mouse_hover_target = null
+
+# ----- Checking stuff -----
+
+func _check_cursor_hover():
+	var collider = mouse_cast_info.get("collider")
+
+	if not mouse_hover_target == collider:
+		_unhover_current()
+	mouse_hover_target = collider
+
+	if not mouse_hover_target:
+		return
+
+	match mouse_hover_target.get_class():
+		"ResourceCollector": _hover_check_resource_collector()
+		"Cell": _hover_check_cell()
+
+
+func _check_cursor_click():
+	var mouse_left_clicked = Input.is_action_just_pressed("mouse_left")
+	var mouse_left_pressed = Input.is_action_pressed("mouse_left")
+	var mouse_left_released = Input.is_action_just_released("mouse_left")
+
+	if not mouse_hover_target:
+		return
+
+	if mouse_left_clicked and not mouse_hover_target == mouse_selection_target:
+		_unselect_current()
+
+	match mouse_hover_target.get_class():
+		"ResourceCollector": _click_check_resource_collector()
+		"Cell": _click_check_cell()
+
+# ----- Resource Collector Stuff -----
+
+func _hover_check_resource_collector():
+	match mouse_hover_target.state:
+
+		Global.SelectorState.NONE:
+			mouse_hover_target.state = Global.SelectorState.HOVERED
+
+		Global.SelectorState.HOVERED: pass
+
+		Global.SelectorState.CLICKED: pass
+
+		Global.SelectorState.SELECTED: pass
+
+
+func _click_check_resource_collector():
+	var mouse_left_clicked = Input.is_action_just_pressed("mouse_left")
+	var mouse_left_pressed = Input.is_action_pressed("mouse_left")
+	var mouse_left_released = Input.is_action_just_released("mouse_left")
+
+	match mouse_hover_target.state:
+
+		Global.SelectorState.NONE: pass
+
+		Global.SelectorState.HOVERED:
+			if mouse_left_clicked:
+				if not mouse_hover_target.building:
+					mouse_hover_target.state = Global.SelectorState.CLICKED
+					var amount = mouse_hover_target.production_amount
+					match mouse_hover_target.resource_type:
+						Global.ResourceType.FUEL:
+							add_fuel(amount)
+						Global.ResourceType.METAL:
+							add_metal(amount)
+
+		Global.SelectorState.CLICKED:
+			if mouse_left_released:
+				if not mouse_hover_target.building:
+					mouse_hover_target.state = Global.SelectorState.HOVERED
+
+		Global.SelectorState.SELECTED: pass
+
+# ----- Cell Stuff -----
+
+func _hover_check_cell():
+	match mouse_hover_target.state:
+
+		Global.SelectorState.NONE:
+			mouse_hover_target.state = Global.SelectorState.HOVERED
+
+		Global.SelectorState.HOVERED: pass
+
+		Global.SelectorState.CLICKED: pass
+
+		Global.SelectorState.SELECTED: pass
+
+
+func _click_check_cell():
+	var mouse_left_clicked = Input.is_action_just_pressed("mouse_left")
+	var mouse_left_pressed = Input.is_action_pressed("mouse_left")
+	var mouse_left_released = Input.is_action_just_released("mouse_left")
+
+	match mouse_hover_target.state:
+
+		Global.SelectorState.NONE: pass
+
+		Global.SelectorState.HOVERED:
+			if mouse_left_clicked:
+				if not mouse_hover_target.building:
+					mouse_hover_target.state = Global.SelectorState.CLICKED
+					var amount = mouse_hover_target.production_amount
+					match mouse_hover_target.resource_type:
+						Global.ResourceType.FUEL:
+							add_fuel(amount)
+						Global.ResourceType.METAL:
+							add_metal(amount)
+
+		Global.SelectorState.CLICKED:
+			if mouse_left_released:
+				if not mouse_hover_target.building:
+					mouse_hover_target.state = Global.SelectorState.HOVERED
+
+		Global.SelectorState.SELECTED: pass
