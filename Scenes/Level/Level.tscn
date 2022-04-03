@@ -162,7 +162,7 @@ __meta__ = {
 }
 
 [node name="CustomCamera" parent="." instance=ExtResource( 2 )]
-transform = Transform( 0.707107, 0.353553, -0.612373, 0, 0.866026, 0.5, 0.707107, -0.353553, 0.612373, -10.2, 9.9, 0.5 )
+transform = Transform( 0.707107, 0.353553, -0.612373, 0, 0.866026, 0.499999, 0.707107, -0.353553, 0.612373, -10.2, 9.9, 0.5 )
 projection = 1
 size = 20.0
 
@@ -386,16 +386,16 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -8.40744, 0, -1.3 )
 production_amount = 2
 
 [node name="MetalResourceCollector1" parent="Resources/Collectors" instance=ExtResource( 28 )]
-transform = Transform( 1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 11.4109, 9.53674e-07, -7.18368 )
+transform = Transform( 1.4, 0, 0, 0, 1.2, 0, 0, 0, 1.4, 11.049, 9.53674e-07, -6.93403 )
 resource_type = 1
 production_amount = 2
 
 [node name="MetalResourceCollector2" parent="Resources/Collectors" instance=ExtResource( 28 )]
-transform = Transform( 1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 13.8109, 9.53674e-07, -4.88368 )
+transform = Transform( 1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 13.8034, 9.53674e-07, -4.86379 )
 resource_type = 1
 production_amount = 2
 
 [node name="MetalResourceCollector3" parent="Resources/Collectors" instance=ExtResource( 28 )]
-transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 10.3109, 9.53674e-07, -1.08368 )
+transform = Transform( 0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 10.1973, 9.53674e-07, -1.16139 )
 resource_type = 1
 production_amount = 2

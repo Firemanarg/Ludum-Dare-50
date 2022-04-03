@@ -1,3 +1,4 @@
+tool
 extends StaticBody
 class_name Cell
 
@@ -10,6 +11,10 @@ var _last_state = null
 func _ready():
 	var mat = $VisualSelector.get_surface_material(0)
 	$VisualSelector.set_surface_material(0, mat.duplicate())
+	if Engine.editor_hint:
+		set_visual_config(Global.CELL_HOVERED_CONFIG)
+	else:
+		state = Global.SelectorState.NONE
 
 
 func _physics_process(delta):
@@ -41,12 +46,12 @@ func _state_none():
 
 
 func _state_hovered():
-	set_visual_config(Global.RES_HOVERED_CONFIG)
+	set_visual_config(Global.CELL_HOVERED_CONFIG)
 
 
 func _state_selected():
-	set_visual_config(Global.RES_SELECTED_CONFIG)
+	set_visual_config(Global.CELL_SELECTED_CONFIG)
 
 
 func _state_clicked():
-	set_visual_config(Global.RES_CLICKED_CONFIG)
+	set_visual_config(Global.CELL_CLICKED_CONFIG)

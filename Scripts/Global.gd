@@ -28,7 +28,7 @@ const RES_HOVERED_CONFIG = {
 	"time_shift_scale": Vector3(0.3, -0.3, 0.3),
 }
 const RES_SELECTED_CONFIG = {
-	"scan_color": Color(0.784314, 0.196078, 0.196078),
+	"scan_color": Color(0.053436, 0.100389, 0.804688),
 	"scan_line_width": 0.3,
 	"scan_line_size": 0.2,
 	"shift": Vector3(0, 0, 0),
@@ -49,11 +49,11 @@ const CELL_HOVERED_CONFIG = {
 	"time_shift_scale": Vector3(0.3, 0.2, 0.3),
 }
 const CELL_SELECTED_CONFIG = {
-	"scan_color": Color(0.784314, 0.196078, 0.196078),
-	"scan_line_width": 0.5,
+	"scan_color": Color(0.053436, 0.100389, 0.804688),
+	"scan_line_width": 0.6,
 	"scan_line_size": 0.3,
 	"shift": Vector3(0, 0, 0),
-	"time_shift_scale": Vector3(0.3, 0.2, 0.3),
+	"time_shift_scale": Vector3(0.3, -0.2, 0.3),
 }
 const CELL_CLICKED_CONFIG = {
 	"scan_color": Color(1, 1, 0),
