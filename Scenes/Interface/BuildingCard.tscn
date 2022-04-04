@@ -1,0 +1,255 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Images/Icons/rock.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Images/Icons/fuel.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Images/Icons/flash.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Images/Icons/target.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Images/Icons/explosion.png" type="Texture" id=6]
+[ext_resource path="res://Assets/Fonts/Kenney Future Narrow.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://Scripts/Interface/BuildingCard.gd" type="Script" id=8]
+[ext_resource path="res://Assets/Images/Icons/sand-clock.png" type="Texture" id=9]
+[ext_resource path="res://Assets/Images/Icons/flash-plus.png" type="Texture" id=10]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.6, 0.6, 0.6, 0.33 )
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="DynamicFont" id=1]
+outline_size = 1
+outline_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+use_filter = true
+font_data = ExtResource( 7 )
+
+[node name="BuildingCard" type="PanelContainer"]
+anchor_right = 0.216
+anchor_bottom = 0.177
+margin_right = -0.184006
+margin_bottom = -6.2
+rect_min_size = Vector2( 200, 100 )
+mouse_default_cursor_shape = 2
+custom_styles/panel = SubResource( 2 )
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 221.0
+margin_bottom = 106.0
+mouse_filter = 2
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 211.0
+margin_bottom = 96.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LabelName" type="Label" parent="MarginContainer/VBoxContainer"]
+margin_right = 201.0
+margin_bottom = 18.0
+custom_fonts/font = SubResource( 1 )
+text = "BUILDING NAME"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 22.0
+margin_right = 201.0
+margin_bottom = 86.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRectIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_right = 64.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 64, 64 )
+texture = ExtResource( 1 )
+expand = true
+stretch_mode = 6
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 68.0
+margin_right = 201.0
+margin_bottom = 64.0
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer"]
+margin_left = 1.0
+margin_top = 4.0
+margin_right = 131.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+size_flags_vertical = 0
+custom_constants/hseparation = 10
+columns = 2
+
+[node name="HBoxContainerMetal" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer"]
+margin_right = 60.0
+margin_bottom = 16.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerMetal"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+hint_tooltip = "Metal Cost"
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 1
+
+[node name="LabelValueMetal" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerMetal"]
+margin_left = 20.0
+margin_top = 1.0
+margin_right = 60.0
+margin_bottom = 15.0
+text = "12345"
+
+[node name="HBoxContainerEnergyRequired" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer"]
+visible = false
+margin_left = 70.0
+margin_right = 130.0
+margin_bottom = 16.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerEnergyRequired"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+hint_tooltip = "Energy Required"
+texture = ExtResource( 4 )
+expand = true
+stretch_mode = 1
+
+[node name="LabelValueEnergyRequired" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerEnergyRequired"]
+margin_left = 20.0
+margin_top = 1.0
+margin_right = 60.0
+margin_bottom = 15.0
+text = "12345"
+
+[node name="HBoxContainerEnergyProduction" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer"]
+margin_left = 70.0
+margin_right = 130.0
+margin_bottom = 16.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerEnergyProduction"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+hint_tooltip = "Energy Production"
+texture = ExtResource( 10 )
+expand = true
+stretch_mode = 1
+
+[node name="LabelValueEnergyProduction" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerEnergyProduction"]
+margin_left = 20.0
+margin_top = 1.0
+margin_right = 60.0
+margin_bottom = 15.0
+text = "12345"
+
+[node name="HBoxContainerFuel" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer"]
+margin_top = 20.0
+margin_right = 60.0
+margin_bottom = 36.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerFuel"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+hint_tooltip = "Fuel Cost"
+texture = ExtResource( 3 )
+expand = true
+stretch_mode = 1
+
+[node name="LabelValueFuel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerFuel"]
+margin_left = 20.0
+margin_top = 1.0
+margin_right = 60.0
+margin_bottom = 15.0
+text = "12345"
+
+[node name="HBoxContainerRange" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer"]
+margin_left = 70.0
+margin_top = 20.0
+margin_right = 130.0
+margin_bottom = 36.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerRange"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+hint_tooltip = "Range"
+texture = ExtResource( 5 )
+expand = true
+stretch_mode = 1
+
+[node name="LabelValueRange" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerRange"]
+margin_left = 20.0
+margin_top = 1.0
+margin_right = 60.0
+margin_bottom = 15.0
+text = "12345"
+
+[node name="HBoxContainerDamage" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer"]
+margin_top = 40.0
+margin_right = 60.0
+margin_bottom = 56.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerDamage"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+hint_tooltip = "Damage"
+texture = ExtResource( 6 )
+expand = true
+stretch_mode = 1
+
+[node name="LabelValueDamage" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerDamage"]
+margin_left = 20.0
+margin_top = 1.0
+margin_right = 60.0
+margin_bottom = 15.0
+text = "12345"
+
+[node name="HBoxContainerCooldown" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer"]
+margin_left = 70.0
+margin_top = 40.0
+margin_right = 130.0
+margin_bottom = 56.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerCooldown"]
+margin_right = 16.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 16, 16 )
+hint_tooltip = "Cooldown"
+texture = ExtResource( 9 )
+expand = true
+stretch_mode = 1
+
+[node name="LabelValueCooldown" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/CenterContainer/GridContainer/HBoxContainerCooldown"]
+margin_left = 20.0
+margin_top = 1.0
+margin_right = 60.0
+margin_bottom = 15.0
+text = "12345"
+
+[connection signal="gui_input" from="." to="." method="_on_BuildingCard_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_BuildingCard_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_BuildingCard_mouse_exited"]
