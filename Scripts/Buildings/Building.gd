@@ -3,17 +3,23 @@ extends StaticBody
 class_name Building
 
 
+enum BuildingType {
+	GENERATOR,
+	WEAPON,
+}
+
 const DEFAULT_SHAPE_HEIGHT = 0.25
 
+export(BuildingType) var building_type = BuildingType.WEAPON
 export(Vector2) var size = Vector2(1, 1)
 export(PoolStringArray) var accepted_selector_classes = []
 
 var colliding_cells = []
 
-var state = Global.BuildingState.IDLE
-var selector_state = Global.SelectorState.NONE
+var building_state = Global.BuildingState.IDLE
+var state = Global.SelectorState.NONE
+var _last_building_state = null
 var _last_state = null
-var _last_selector_state = null
 
 
 func _ready():
@@ -25,7 +31,7 @@ func _ready():
 	if Engine.editor_hint:
 		set_visual_config(Global.BUILDING_HOVERED_CONFIG)
 	else:
-		selector_state = Global.SelectorState.NONE
+		state = Global.SelectorState.NONE
 	_update_base()
 
 
@@ -34,22 +40,21 @@ func _physics_process(delta):
 		_update_base()
 
 	else:
-		if not state == _last_state:
-			print("State changed: ", _last_state, " -> ", state)
-			_last_state = state
+		if not building_state == _last_building_state:
+			_last_building_state = building_state
 
-		match state:
+		match building_state:
 
 			Global.BuildingState.IDLE: _state_idle()
 			Global.BuildingState.OPERATING: _state_operating()
 			Global.BuildingState.PLACING: _state_placing()
 
-		if not selector_state == _last_selector_state:
-			match selector_state:
+		if not state == _last_state:
+			match state:
 				Global.SelectorState.NONE: _state_none()
 				Global.SelectorState.HOVERED: _state_hovered()
 				Global.SelectorState.SELECTED: _state_selected()
-			_last_selector_state = selector_state
+			_last_state = state
 
 
 func get_class() -> String:
@@ -82,8 +87,8 @@ func set_visual_config(config: Dictionary):
 func place():
 	for cell in colliding_cells:
 		cell.building = self
-	state = Global.BuildingState.IDLE
-	selector_state = Global.SelectorState.NONE
+	building_state = Global.BuildingState.IDLE
+	state = Global.SelectorState.NONE
 	set_visual_config(Global.NONE_CONFIG)
 	pass
 
@@ -98,8 +103,9 @@ func _state_operating():
 
 
 func _state_placing():
+#	print("State PLACING")
 	$CollisionShape.disabled = true
-	selector_state = Global.SelectorState.NONE
+	state = Global.SelectorState.NONE
 	if can_be_placed():
 		set_visual_config(Global.BUILDING_PLACING_ALLOW_CONFIG)
 	else:
@@ -109,18 +115,18 @@ func _state_placing():
 # ----- Selector States -----
 
 func _state_none():
-	if not state == Global.BuildingState.PLACING:
+	if not building_state == Global.BuildingState.PLACING:
 		print("None")
 		set_visual_config(Global.NONE_CONFIG)
 
 
 func _state_hovered():
-	if not state == Global.BuildingState.PLACING:
+	if not building_state == Global.BuildingState.PLACING:
 		set_visual_config(Global.BUILDING_HOVERED_CONFIG)
 
 
 func _state_selected():
-	if not state == Global.BuildingState.PLACING:
+	if not building_state == Global.BuildingState.PLACING:
 		set_visual_config(Global.BUILDING_SELECTED_CONFIG)
 
 # ----- Update -----

@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scenes/Buildings/Building.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scenes/Models/Spacekit/MachineGeneratorLarge.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/Buildings/Generator.gd" type="Script" id=3]
 
 [sub_resource type="BoxShape" id=9]
 extents = Vector3( 1, 0.25, 1 )
@@ -69,7 +70,63 @@ shader_param/scan_color = Color( 0.078431, 1, 1, 1 )
 shader_param/scan_line_width = 0.5
 shader_param/scan_line_size = 0.3
 
+[sub_resource type="SphereMesh" id=14]
+radius = 3.0
+height = 6.0
+
+[sub_resource type="Shader" id=15]
+code = "/*
+	魔法防御シェーダー 3 by あるる（きのもと 結衣）
+	Magical Shield Shader 3 by Yui Kinomoto @arlez80
+
+	MIT License
+*/
+
+shader_type spatial;
+render_mode unshaded, depth_draw_never;
+
+uniform vec2 speed = vec2( 0.2, 0.2 );
+uniform vec4 barrier_color : hint_color = vec4( 0.05, 0.8, 1.0, 1.0 );
+uniform float barrier_force = 1.0;
+uniform float barrier_noise_force = 0.6;
+uniform float barrier_fog_noise_force = 0.3;
+uniform sampler2D barrier_noise : hint_normal;
+
+void fragment( )
+{
+	float rim = pow( 1.0 - dot( NORMAL, VIEW ), 4.0 ) * barrier_force;
+
+	vec2 p = texture( barrier_noise, -UV ).xy + TIME * speed;
+	float line_noise = clamp( ( sin( texture( barrier_noise, p ).r * 3.1415926535 ) - 0.995 ) * 90.0, 0.0, 1.0 ) * barrier_noise_force;
+
+	float fog_noise = texture( barrier_noise, vec2( UV.x * 8.0 - TIME * speed.x, UV.y * 8.0 ) ).r * barrier_fog_noise_force;
+
+	ALBEDO = barrier_color.rgb;
+	ALPHA = clamp( rim + line_noise + fog_noise, 0.0, 1.0 );
+}"
+
+[sub_resource type="OpenSimplexNoise" id=17]
+
+[sub_resource type="NoiseTexture" id=18]
+width = 400
+height = 400
+noise = SubResource( 17 )
+
+[sub_resource type="ShaderMaterial" id=16]
+shader = SubResource( 15 )
+shader_param/speed = Vector2( 0.2, 0.2 )
+shader_param/barrier_color = Color( 0.87451, 1, 0, 1 )
+shader_param/barrier_force = 1.5
+shader_param/barrier_noise_force = 0.6
+shader_param/barrier_fog_noise_force = 0.011
+shader_param/barrier_noise = SubResource( 18 )
+
+[sub_resource type="SphereShape" id=13]
+radius = 3.0
+
 [node name="Generator" instance=ExtResource( 1 )]
+script = ExtResource( 3 )
+building_type = 0
 accepted_selector_classes = PoolStringArray( "Cell" )
 
 [node name="CollisionShape" parent="." index="0"]
@@ -84,3 +141,15 @@ shape = SubResource( 10 )
 [node name="VisualSelector" parent="." index="3"]
 mesh = SubResource( 11 )
 material/0 = SubResource( 12 )
+
+[node name="EnergyArea" type="MeshInstance" parent="." index="4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1 )
+mesh = SubResource( 14 )
+skeleton = NodePath("../Area")
+material/0 = SubResource( 16 )
+
+[node name="Area" type="Area" parent="." index="5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Area" index="0"]
+shape = SubResource( 13 )

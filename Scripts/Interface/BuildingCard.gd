@@ -71,5 +71,6 @@ func _on_BuildingCard_gui_input(event):
 			if event.is_pressed():
 				set_bg_color(PRESSED_COLOR)
 				emit_signal("pressed", building_id)
+				print("Pressed emitted")
 			else:
 				set_bg_color(HOVERED_COLOR)

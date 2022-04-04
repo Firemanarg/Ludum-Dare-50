@@ -1,3 +1,4 @@
+tool
 extends Node
 
 
@@ -19,6 +20,7 @@ enum ResourceType {
 enum BuildingID {
 	UNKNOWN = -1,
 	GENERATOR,
+	BASIC_CANNON,
 }
 
 const CELL_SIZE = Vector3(2, 0, 2)
@@ -43,13 +45,26 @@ const BUILDINGS = {
 		"scene": preload("res://Scenes/Buildings/Generator.tscn"),
 		"icon": preload("res://Assets/Images/Icons/BuildingPortraits/machine_generatorLarge_NW.png"),
 		"metal": 120,
-		"fuel": 60,
+		"fuel": 100,
 		"energy_required": 0,
 		"energy_produced": 10,
 		"range": 1,
 		"damage": 0,
 		"cooldown": 0,
-	}
+	},
+	BuildingID.BASIC_CANNON: {
+		"name": "Basic Cannon",
+		"description": "A Basic Cannon to handle the asteroid",
+		"scene": preload("res://Scenes/Buildings/BasicCannon.tscn"),
+		"icon": preload("res://Assets/Images/Icons/BuildingPortraits/turret_single_SW.png"),
+		"metal": 200,
+		"fuel": 80,
+		"energy_required": 10,
+		"energy_produced": 0,
+		"range": 200000,
+		"damage": 150,
+		"cooldown": 5,
+	},
 }
 const NONE_CONFIG = {
 	"scan_color": Color(0, 0, 0),

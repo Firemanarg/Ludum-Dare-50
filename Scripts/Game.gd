@@ -11,8 +11,10 @@ var p_level = preload("res://Scenes/Level/Level.tscn")
 var level: Spatial = null
 var camera: CustomCamera = null
 var grid: Spatial = null
+var hud: HUD = null
 var collectors: Grid = null
 var buildings: Spatial = null
+var asteroid_info: AsteroidInfo = null
 
 var mouse_hover_target = null
 var mouse_selection_target = null
@@ -26,11 +28,18 @@ var metal_amount = 0
 var game_mode = GameMode.SELECTION
 var building = null
 
+# Gameplay
+var asteroid_max_distance = 100000
+var asteroid_speed = 800
+var asteroid_distance = asteroid_max_distance
+
 
 func _ready():
 	camera = $Level/CustomCamera
 	buildings = $Level/Buildings
-	pass
+	hud = $HUD
+	asteroid_info = hud.get_node("AsteroidInfo")
+	_init_asteroid()
 #	start_game()
 
 
@@ -45,6 +54,8 @@ func _physics_process(delta):
 			_check_building_click()
 		else:
 			game_mode = GameMode.SELECTION
+	_move_asteroid(delta)
+	_update_currency_labels()
 
 
 func start_game():
@@ -85,6 +96,22 @@ func _unhover_current():
 		"Building": _unhover_building()
 	mouse_hover_target = null
 
+# ----- Gameplay -----
+
+func _init_asteroid():
+	asteroid_info.set_asteroid_max_distance(asteroid_max_distance)
+	asteroid_info.set_asteroid_distance(asteroid_distance)
+
+
+func _move_asteroid(delta):
+	asteroid_distance -= asteroid_speed * delta
+	asteroid_info.set_asteroid_distance(asteroid_distance)
+
+
+func _update_currency_labels():
+	hud.set_metal_amount(metal_amount)
+	hud.set_fuel_amount(fuel_amount)
+
 # ----- Checking stuff -----
 
 func _check_cursor_hover():
@@ -107,12 +134,15 @@ func _check_cursor_click():
 	var mouse_left_pressed = Input.is_action_pressed("mouse_left")
 	var mouse_left_released = Input.is_action_just_released("mouse_left")
 
+	if hud.is_mouse_over_hud():
+		return
 	if (
 		not mouse_left_clicked
 		and not mouse_left_pressed
 		and not mouse_left_released
 	):
 		return
+
 	if not mouse_hover_target:
 		_unselect_current()
 	else:
@@ -294,7 +324,8 @@ func _hovered_building():
 
 		Global.SelectorState.CLICKED: pass
 
-		Global.SelectorState.SELECTED: pass
+		Global.SelectorState.SELECTED:
+			mouse_hover_target.state = Global.SelectorState.HOVERED
 
 
 func _clicked_building():
@@ -367,8 +398,11 @@ func _check_building_click():
 	var mouse_left_click = Input.is_action_just_pressed("mouse_left")
 	var mouse_right_click = Input.is_action_just_pressed("mouse_right")
 	var cancel_action_click = Input.is_action_just_pressed("cancel_action")
+	var collider = mouse_cast_info.get("collider")
 
-	if mouse_left_click:
+	if hud.is_mouse_over_hud():
+		return
+	if mouse_left_click and collider in building.colliding_cells:
 		if building.can_be_placed():
 			building.place()
 			building = null
@@ -383,11 +417,12 @@ func _check_building_click():
 # ----- GUI Integration -----
 
 func _on_GUI_start_build(building_id):
+	_unselect_current()
 	if building:
 		building.queue_free()
 		building = null
 	var building_info = Global.BUILDINGS.get(building_id)
 	building = building_info.get("scene").instance()
-	building.state = Global.BuildingState.PLACING
+	building.building_state = Global.BuildingState.PLACING
 	buildings.add_child(building)
 	game_mode = GameMode.PLACING
