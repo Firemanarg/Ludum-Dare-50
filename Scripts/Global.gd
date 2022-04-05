@@ -21,6 +21,7 @@ enum BuildingID {
 	UNKNOWN = -1,
 	GENERATOR,
 	BASIC_CANNON,
+	MASTER_CANNON,
 }
 
 const CELL_SIZE = Vector3(2, 0, 2)
@@ -55,17 +56,40 @@ const BUILDINGS = {
 	BuildingID.BASIC_CANNON: {
 		"name": "Basic Cannon",
 		"description": "A Basic Cannon to handle the asteroid",
+#		"scene": preload("res://Scenes/Buildings/Weapon.tscn"),
 		"scene": preload("res://Scenes/Buildings/BasicCannon.tscn"),
 		"icon": preload("res://Assets/Images/Icons/BuildingPortraits/turret_single_SW.png"),
 		"metal": 200,
 		"fuel": 80,
 		"energy_required": 10,
 		"energy_produced": 0,
-		"range": 200000,
+		"range": 50000,
 		"damage": 150,
 		"cooldown": 5,
 	},
+	BuildingID.MASTER_CANNON: {
+		"name": "Master Cannon",
+		"description": "If you need more power, take this!",
+		"scene": preload("res://Scenes/Buildings/MasterCannon.tscn"),
+		"icon": preload("res://Assets/Images/Icons/BuildingPortraits/turret_double_SW.png"),
+		"metal": 800,
+		"fuel": 300,
+		"energy_required": 60,
+		"energy_produced": 0,
+		"range": 80000,
+		"damage": 500,
+		"cooldown": 10,
+	},
 }
+const WAVES = [
+	{"max_distance": 50000, "speed": 600, "max_health": 2000},
+	{"max_distance": 80000, "speed": 900, "max_health": 5000},
+	{"max_distance": 100000, "speed": 1500, "max_health": 8000},
+	{"max_distance": 120000, "speed": 2000, "max_health": 15000},
+	{"max_distance": 150000, "speed": 5000, "max_health": 30000},
+	{"max_distance": 160000, "speed": 8000, "max_health": 50000},
+	{"max_distance": 160000, "speed": 10000, "max_health": 100000},
+]
 const NONE_CONFIG = {
 	"scan_color": Color(0, 0, 0),
 	"scan_line_width": 0,
@@ -142,4 +166,7 @@ const BUILDING_PLACING_DENY_CONFIG = {
 	"scan_line_size": 0.3,
 	"shift": Vector3(0, 0, 0),
 	"time_shift_scale": Vector3(0.3, 0.2, 0.3),
+}
+const PRELOADS = {
+	"bullet": preload("res://Scenes/Components/Bullet.tscn"),
 }

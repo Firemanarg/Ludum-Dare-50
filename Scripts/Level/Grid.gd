@@ -1,5 +1,5 @@
 extends Spatial
-class_name Grid
+class_name CellGrid
 
 
 var cells: Array = []
@@ -17,6 +17,7 @@ func init_cells_array():
 		cells.append([])
 		for cell in row.get_children():
 			cells[row_index].append(cell)
+			cell.building = null
 		row_index += 1
 
 

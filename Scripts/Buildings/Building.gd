@@ -15,6 +15,7 @@ export(Vector2) var size = Vector2(1, 1)
 export(PoolStringArray) var accepted_selector_classes = []
 
 var colliding_cells = []
+var building_id = Global.BuildingID.UNKNOWN
 
 var building_state = Global.BuildingState.IDLE
 var state = Global.SelectorState.NONE
@@ -92,6 +93,66 @@ func place():
 	set_visual_config(Global.NONE_CONFIG)
 	pass
 
+# ----- Getters -----
+
+func get_building_name() -> String:
+	var value = Global.BUILDINGS.get(building_id).name
+	return value
+
+
+func get_description() -> String:
+	var value = Global.BUILDINGS.get(building_id).description
+	return value
+
+
+func get_building_scene():
+	var value = Global.BUILDINGS.get(building_id).scene
+	return value
+
+
+func get_icon():
+	var value = Global.BUILDINGS.get(building_id).icon
+	return value
+
+
+func get_metal_cost() -> int:
+	var value = Global.BUILDINGS.get(building_id).metal
+	return value
+
+
+func get_fuel_cost() -> int:
+	var value = Global.BUILDINGS.get(building_id).fuel
+	return value
+
+
+func get_energy_required() -> int:
+	var value = Global.BUILDINGS.get(building_id).energy_required
+	return value
+
+
+func get_energy_amount() -> int:
+	return 0
+
+
+func get_energy_produced() -> int:
+	var value = Global.BUILDINGS.get(building_id).energy_produced
+	return value
+
+
+func get_range() -> int:
+	var value = Global.BUILDINGS.get(building_id).range
+	return value
+
+
+func get_damage() -> int:
+	var value = Global.BUILDINGS.get(building_id).damage
+	return value
+
+
+func get_cooldown() -> float:
+	var value = float(Global.BUILDINGS.get(building_id).cooldown)
+	return value
+
 # ----- Building States -----
 
 func _state_idle():
@@ -103,7 +164,6 @@ func _state_operating():
 
 
 func _state_placing():
-#	print("State PLACING")
 	$CollisionShape.disabled = true
 	state = Global.SelectorState.NONE
 	if can_be_placed():
@@ -116,7 +176,6 @@ func _state_placing():
 
 func _state_none():
 	if not building_state == Global.BuildingState.PLACING:
-		print("None")
 		set_visual_config(Global.NONE_CONFIG)
 
 

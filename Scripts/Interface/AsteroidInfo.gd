@@ -11,6 +11,9 @@ export var _asteroid_distance = 100
 var rotation_speed = 10
 var _asteroid_max_distance = 100
 
+var _asteroid_max_health = 100
+var _asteroid_health = _asteroid_max_health
+
 
 func _ready():
 	$Asteroid.rect_rotation = 0
@@ -20,7 +23,16 @@ func _process(delta):
 	_update_asteroid_position()
 	_update_bar()
 	_update_label()
+	_update_asteroid_size()
 	$Asteroid.rect_rotation += rotation_speed * delta
+
+
+func set_asteroid_max_health(value: int):
+	_asteroid_max_health = value
+
+
+func set_asteroid_health(value: int):
+	_asteroid_health = value
 
 
 func set_asteroid_max_distance(value: int):
@@ -30,6 +42,11 @@ func set_asteroid_max_distance(value: int):
 
 func set_asteroid_distance(value: int):
 	_asteroid_distance = value
+
+
+func _update_asteroid_size():
+	var percent = float(_asteroid_health) / _asteroid_max_health
+	$Asteroid.rect_scale = Vector2.ONE * percent
 
 
 func _update_asteroid_position():

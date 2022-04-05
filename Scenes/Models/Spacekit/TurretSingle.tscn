@@ -6,3 +6,6 @@
 
 [node name="turret_single" parent="tmpParent" index="0"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+
+[node name="turret" parent="tmpParent/turret_single" index="0"]
+transform = Transform( 1, 0, 0, 0, 0.707106, -0.707107, 0, 0.707107, 0.707106, 0, 0.299378, -0.0111803 )
